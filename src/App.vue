@@ -1,18 +1,28 @@
 <script setup>
-  import { ref } from 'vue'
+  import { ref, computed } from 'vue'
 
   let id = 0
 
   const newTodo = ref('')
+  const hideCompleted= ref(false)
 
   const todos = ref([
-    {id: id++, text: "sample"},
-    {id: id++, text: "sample2"},
-    {id: id++, text: "sample3"}
+    {id: id++, text: "sample", done: true},
+    {id: id++, text: "sample2", done: true},
+    {id: id++, text: "sample3", done: false}
   ])
 
+  // its a computed ref that computes its value based on other reactive data sources
+  // uses todos ref object
+  const filteredTodos = computed(() => {
+    return hideCompleted.value
+      ? todos.value.filter((t) => !t.done)
+      : todos.value
+  })
+
+
   function addTodo() {
-    todos.value.push({id: id++, text: newTodo.value})
+    todos.value.push({id: id++, text: newTodo.value, done: false})
     newTodo.value = ''
   }
 
@@ -29,10 +39,20 @@
     <button>Add Todo</button>
   </form>
   <ul>
-    <li v-for="todo in todos" :key="todo.id">
-      {{ todo.text }}
+    <li v-for="todo in filteredTodos" :key="todo.id">
+      <input type="checkbox" v-model="todo.done">
+      <span :class="{done: todo.done}">{{ todo.text }}</span>
       <button @click="removeTodo(todo)">X</button>
     </li>
   </ul>
+  <button @click="hideCompleted = !hideCompleted">
+    {{ hideCompleted ? 'Show all' : 'Hide Completed'}}
+  </button>
 </template>
 
+<style>
+  .done {
+    text-decoration: line-through;
+  }
+
+</style>
