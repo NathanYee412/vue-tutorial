@@ -1,11 +1,11 @@
 <script setup>
-  import { ref, computed } from 'vue'
+  import { ref, computed, onMounted } from 'vue'
 
   let id = 0
 
   const newTodo = ref('')
   const hideCompleted= ref(false)
-
+  const title = ref(null)
   const todos = ref([
     {id: id++, text: "sample", done: true},
     {id: id++, text: "sample2", done: true},
@@ -20,6 +20,11 @@
       : todos.value
   })
 
+  // Manually change DOM elements using onMounted 
+  // h1 tag title is changed from hello to Todo list
+  onMounted(() => {
+    title.value.textContent = "Todo List"
+  })
 
   function addTodo() {
     todos.value.push({id: id++, text: newTodo.value, done: false})
@@ -34,6 +39,7 @@
 
 
 <template>
+  <h1 ref="title">Hello</h1>
   <form @submit.prevent="addTodo">
     <input v-model="newTodo">
     <button>Add Todo</button>
