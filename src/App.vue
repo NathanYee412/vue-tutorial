@@ -1,25 +1,45 @@
 <script setup>
-import { reactive, ref } from 'vue';
-import Test from './Test.vue';
-import TodoList from './TodoList.vue';
-const state = reactive({ count: 0 });
-const test = ref('hello world');
-function increment() {
-  state.count++;
+
+import { ref } from 'vue';
+
+
+let id = ref(0);
+let newItem = ref('')
+
+const shoppingList = ref([
+  { id: id++, text: 'Hamburger'},
+  { id: id++, text: 'Hotdog'},
+  { id: id++, text: 'Buns'},
+  { id: id++, text: 'Ketchup'},
+]);
+
+
+function addToList(todo) {
+  shoppingList.value.push({id: id++, text: newItem.value });
+  newItem.value = '';
 }
+
+
 </script>
 
 <template>
-  <TodoList />
-  <Test />
-  <h1>{{ test }}</h1>
-  <button @click="increment">
-    {{ state.count }}
-  </button>
+  <div class="container">
+    <h1>Shopping List</h1>
+    <form @submit.prevent="addToList">
+      <input v-model="newItem">
+    </form>
+    <ul>
+      <li v-for="item in shoppingList" :key="shoppingList.id">
+        <p>{{ item.text }}</p>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <style>
-button {
-    color: red;
+.container {
+  margin: 0 auto;
+  background-color: red;
 }
+
 </style>
